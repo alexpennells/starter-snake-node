@@ -2,7 +2,7 @@ class Snek {
   constructor(request) {
     this.state = request.body;
     this.port = this.star = this.bow = this.stern = 0;
-  },
+  }
 
   move() {
     const board = this.createNewBoard();
@@ -29,7 +29,7 @@ class Snek {
     return {
       move: this.determineMove(initialPossibleMoves, possibleMoves, food),
     };
-  },
+  }
 
   createNewBoard() {
     let newBoard = new Array();
@@ -40,7 +40,7 @@ class Snek {
       }
     }
     return newBoard;
-  },
+  }
 
   addSneksToBoard(board) {
     this.state.board.snakes.forEach(snake =>
@@ -48,11 +48,11 @@ class Snek {
         this.updateBoard(point.x, point.y, 1, board);
       })
     );
-  },
+  }
 
   updateBoard(x, y, val, board) {
     board[y][x] = val;
-  },
+  }
 
   getPossibleMoves(board) {
     const x = this.state.you.body[0].x;
@@ -73,7 +73,7 @@ class Snek {
       availableMoves = removeFromArray(availableMoves, "down");
     }
     return availableMoves;
-  },
+  }
 
   addEnemySneks(board) {
     const enemySnakes = this.state.board.snakes.filter(snake => !(snake.body[0].x === this.state.you.body[0].x && snake.body[0].y === this.state.you.body[0].y))
@@ -93,7 +93,7 @@ class Snek {
         }
       }
     })
-  },
+  }
 
   markDeadEnds(board, duppedBoard, possibleMoves) {
     possibleMoves.forEach(move => {
@@ -111,7 +111,7 @@ class Snek {
         if (this.bow > 0 && this.bow < 15) this.copyToBoard(5, board, duppedBoard);
       }
     });
-  },
+  }
 
   spacesCount(board, x, y, fill) {
     let right = 0;
@@ -135,14 +135,14 @@ class Snek {
       up = this.spacesCount(board, x, y - 1, fill);
     }
     return 1 + right + left + up + down;
-  },
+  }
 
   copyToBoard(fill, board, duppedBoard) {
     for (let y = 0; y < duppedBoard.length; y++)
       for (let x = 0; x < duppedBoard[y].length; x++)
         if (duppedBoard[y][x] === fill)
           board[y][x] = 1;
-  },
+  }
 
   findFood() {
     if (this.state.board.food.length !== 0) {
@@ -152,18 +152,18 @@ class Snek {
     }
 
     return false;
-  },
+  }
 
   calculateDistance(snakeHead, food) {
     const xDist = Math.abs(snakeHead.x - food.x);
     const yDist = Math.abs(snakeHead.y - food.y);
     return xDist + yDist;
-  },
+  }
 
   biggestSnake() {
     return Math.max(...this.state.board.snakes.filter(snake => !(snake.body[0].x === this.state.you.body[0].x && snake.body[0].y === this.state.you.body[0].y))
     .map(snake => snake.body.length))
-  },
+  }
 
   determineMove(initialPossibleMoves, possibleMoves, food) {
     if (initialPossibleMoves.length === 1) {
@@ -198,7 +198,7 @@ class Snek {
     } else {
       return possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
     }
-  },
+  }
 };
 
 module.exports = {
