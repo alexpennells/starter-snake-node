@@ -28,10 +28,11 @@ app.post('/start', (request, response) => {
   // Response data
   const data = {
     color: '#ff3377',
+    secondary_color: '#000000',
     name: 'pebbz',
     taunt: 'ESKEETIT',
-    tail_type: 'pixel',
-    head_type: 'pixel'
+    tail_type: 'curled',
+    head_type: 'fang'
   }
 
   return response.json(data)
