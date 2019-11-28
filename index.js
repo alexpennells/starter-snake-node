@@ -32,8 +32,8 @@ app.post('/start', (request, response) => {
     secondary_color: '#000000',
     head_url: 'http://assets.stickpng.com/thumbs/580b585b2edbce24c47b2db2.png',
     taunt: 'ESKEETIT',
-    tail_type: 'pixel'
-
+    tail_type: 'pixel',
+    head_type: 'pixel'
   }
 
   return response.json(data)
