@@ -2,7 +2,7 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const logger = require('morgan')
 const app = express()
-const { move } = require('./snek.js')
+const { snek } = require('./snek.js')
 const {
   fallbackHandler,
   notFoundHandler,
@@ -24,33 +24,16 @@ app.use(poweredByHandler)
 
 // Handle POST request to '/start'
 app.post('/start', (request, response) => {
-  // NOTE: Do something here to start the game
-
-  // Response data
-  const data = {
-    color: '#ff3377',
-    headType: 'silly',
-    tailType: 'bolt',
-  }
-
-  return response.json(data)
+  return response.json(snek.start())
 })
 
 // Handle POST request to '/move'
 app.post('/move', (request, response) => {
-  // NOTE: Do something here to generate your move
-
-  // Response data
-  const data = {
-    move: move(request),
-  }
-
-  return response.json(data)
+  return response.json(snek.move(request))
 })
 
 app.post('/end', (request, response) => {
-  // NOTE: Any cleanup when a game is complete.
-  return response.json({})
+  return response.json(snek.end())
 })
 
 app.post('/ping', (request, response) => {
