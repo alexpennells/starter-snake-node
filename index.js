@@ -34,7 +34,7 @@ app.post('/start', (request, response) => {
 // Handle POST request to '/move'
 app.post('/move', (request, response) => {
   try {
-    const snek = Snek.new(request);
+    const snek = new Snek(request);
     return response.json(snek.move());
   } catch (e) {
     console.log(e);
