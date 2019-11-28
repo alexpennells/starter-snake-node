@@ -29,8 +29,8 @@ app.post('/start', (request, response) => {
   const data = {
     color: '#ff3377',
     taunt: 'ESKEETIT',
-    tailType: 'bolt',
-    headType: 'fang'
+    headType: 'dead',
+    tailType: 'bolt'
   }
 
   return response.json(data)
