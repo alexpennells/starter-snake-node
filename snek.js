@@ -1,135 +1,119 @@
-const snek = {
-  state: {},
-  star: 0,
-  port: 0,
-  bow: 0,
-  stern: 0,
-
-  start: () => {
-    return {
-      color: '#ff3377',
-      headType: 'silly',
-      tailType: 'bolt',
-    };
+class Snek {
+  constructor(request) {
+    this.state = request.body;
+    this.port = this.star = this.bow = this.stern = 0;
   },
 
-  end: () => {
-    return {};
-  },
+  move() {
+    const board = this.createNewBoard();
+    this.addSneksToBoard(board);
 
-  move: request => {
-    state = request.body;
-    port = star = bow = stern = 0
+    const initialPossibleMoves = this.getPossibleMoves(board);
 
-    const board = createNewBoard();
-    addSneksToBoard(board);
+    const duppedBoard = this.createNewBoard();
+    this.addSneksToBoard(duppedBoard);
 
-    const initialPossibleMoves = getPossibleMoves(board);
+    this.addEnemySneks(board)
+    this.addEnemySneks(duppedBoard)
 
-    const duppedBoard = createNewBoard();
-    addSneksToBoard(duppedBoard);
+    this.markDeadEnds(board, duppedBoard, initialPossibleMoves)
 
-    addEnemySneks(board)
-    addEnemySneks(duppedBoard)
-
-    markDeadEnds(board, duppedBoard, initialPossibleMoves)
-
-    const possibleMoves = getPossibleMoves(board);
+    const possibleMoves = this.getPossibleMoves(board);
 
     let food = false;
-    if (state.you.health < 50)
-      food = findFood();
-    else if (biggestSnake() >= state.you.body.length - 2)
-      food = findFood();
+    if (this.state.you.health < 50)
+      food = this.findFood();
+    else if (this.biggestSnake() >= this.state.you.body.length - 2)
+      food = this.findFood();
 
     return {
-      move: determineMove(initialPossibleMoves, possibleMoves, food),
+      move: this.determineMove(initialPossibleMoves, possibleMoves, food),
     };
   },
 
-  createNewBoard: () => {
+  createNewBoard() {
     let newBoard = new Array();
-    for (let x = 0; x < state.board.width; x++) {
+    for (let x = 0; x < this.state.board.width; x++) {
       newBoard[x] = new Array();
-      for (let y = 0; y < state.board.height; y++) {
+      for (let y = 0; y < this.state.board.height; y++) {
         newBoard[x][y] = 0;
       }
     }
     return newBoard;
   },
 
-  addSneksToBoard: board => {
-    state.board.snakes.forEach(snake =>
+  addSneksToBoard(board) {
+    this.state.board.snakes.forEach(snake =>
       snake.body.forEach(point => {
-        updateBoard(point.x, point.y, 1, board);
+        this.updateBoard(point.x, point.y, 1, board);
       })
     );
   },
 
-  updateBoard: (x, y, val, board) => {
+  updateBoard(x, y, val, board) {
     board[y][x] = val;
   },
 
-  getPossibleMoves: board => {
-    const x = state.you.body[0].x;
-    const y = state.you.body[0].y;
+  getPossibleMoves(board) {
+    const x = this.state.you.body[0].x;
+    const y = this.state.you.body[0].y;
     const removeFromArray = (arr, val) => arr.filter(el => el != val);
 
     let availableMoves = ["up", "down", "left", "right"];
     if (x === 0 || board[y][x - 1] !== 0) {
       availableMoves = removeFromArray(availableMoves, "left");
     }
-    if (x === state.board.width - 1 || board[y][x + 1] !== 0) {
+    if (x === this.state.board.width - 1 || board[y][x + 1] !== 0) {
       availableMoves = removeFromArray(availableMoves, "right");
     }
     if (y === 0 || board[y - 1][x] !== 0) {
       availableMoves = removeFromArray(availableMoves, "up");
     }
-    if (y === state.board.height - 1 || board[y + 1][x] !== 0) {
+    if (y === this.state.board.height - 1 || board[y + 1][x] !== 0) {
       availableMoves = removeFromArray(availableMoves, "down");
     }
     return availableMoves;
   },
 
-  addEnemySneks: board => {
-    const enemySnakes = state.board.snakes.filter(snake => !(snake.body[0].x === state.you.body[0].x && snake.body[0].y === state.you.body[0].y))
+  addEnemySneks(board) {
+    const enemySnakes = this.state.board.snakes.filter(snake => !(snake.body[0].x === this.state.you.body[0].x && snake.body[0].y === this.state.you.body[0].y))
     enemySnakes.forEach(snake => {
-      if (snake.body.length >= state.you.body.length) {
+      if (snake.body.length >= this.state.you.body.length) {
         if (snake.body[0].x > 0) {
-          updateBoard(snake.body[0].x -1, snake.body[0].y, 1, board)
+          this.updateBoard(snake.body[0].x -1, snake.body[0].y, 1, board)
         }
-        if (snake.body[0].x < state.board.width -1) {
-          updateBoard(snake.body[0].x +1, snake.body[0].y, 1, board)
+        if (snake.body[0].x < this.state.board.width -1) {
+          this.updateBoard(snake.body[0].x +1, snake.body[0].y, 1, board)
         }
         if (snake.body[0].y > 0) {
-          updateBoard(snake.body[0].x, snake.body[0].y -1, 1, board)
+          this.updateBoard(snake.body[0].x, snake.body[0].y -1, 1, board)
         }
-        if (snake.body[0].y < state.board.height -1) {
-          updateBoard(snake.body[0].x, snake.body[0].y + 1, 1, board)
+        if (snake.body[0].y < this.state.board.height -1) {
+          this.updateBoard(snake.body[0].x, snake.body[0].y + 1, 1, board)
         }
       }
     })
   },
 
-  markDeadEnds: (board, duppedBoard, possibleMoves) => {
+  markDeadEnds(board, duppedBoard, possibleMoves) {
     possibleMoves.forEach(move => {
       if (move === "right") {
-        star = spacesCount(duppedBoard, state.you.body[0].x + 1, state.you.body[0].y, 2);
-        if (star > 0 && star < 15) copyToBoard(2, board, duppedBoard);
+        this.star = this.spacesCount(duppedBoard, this.state.you.body[0].x + 1, this.state.you.body[0].y, 2);
+        if (this.star > 0 && this.star < 15) this.copyToBoard(2, board, duppedBoard);
       } else if (move === "left") {
-        port = spacesCount(duppedBoard, state.you.body[0].x - 1, state.you.body[0].y, 3);
-        if (port > 0 && port < 15) copyToBoard(3, board, duppedBoard);
+        this.port = this.spacesCount(duppedBoard, this.state.you.body[0].x - 1, this.state.you.body[0].y, 3);
+        if (this.port > 0 && this.port < 15) this.copyToBoard(3, board, duppedBoard);
       } else if (move === "down") {
-        stern = spacesCount(duppedBoard, state.you.body[0].x, state.you.body[0].y + 1, 4);
-        if (stern > 0 && stern < 15) copyToBoard(4, board, duppedBoard);
+        this.stern = this.spacesCount(duppedBoard, this.state.you.body[0].x, this.state.you.body[0].y + 1, 4);
+        if (this.stern > 0 && this.stern < 15) this.copyToBoard(4, board, duppedBoard);
       } else if (move === "up") {
-        bow = spacesCount(duppedBoard, state.you.body[0].x, state.you.body[0].y - 1, 5);
-        if (bow > 0 && bow < 15) copyToBoard(5, board, duppedBoard);
+        this.bow = this.spacesCount(duppedBoard, this.state.you.body[0].x, this.state.you.body[0].y - 1, 5);
+        if (this.bow > 0 && this.bow < 15) this.copyToBoard(5, board, duppedBoard);
       }
     });
   },
 
-  spacesCount: (board, x, y, fill) => {
+  spacesCount(board, x, y, fill) {
     let right = 0;
     let left = 0;
     let down = 0;
@@ -138,60 +122,60 @@ const snek = {
     if (board[y][x] !== 0) return 0;
     board[y][x] = fill;
 
-    if (x < state.board.width - 1) {
-      right = spacesCount(board, x + 1, y, fill);
+    if (x < this.state.board.width - 1) {
+      right = this.spacesCount(board, x + 1, y, fill);
     }
     if (x > 0) {
-      left = spacesCount(board, x - 1, y, fill);
+      left = this.spacesCount(board, x - 1, y, fill);
     }
-    if (y < state.board.height - 1) {
-      down = spacesCount(board, x, y + 1, fill);
+    if (y < this.state.board.height - 1) {
+      down = this.spacesCount(board, x, y + 1, fill);
     }
     if (y > 0) {
-      up = spacesCount(board, x, y - 1, fill);
+      up = this.spacesCount(board, x, y - 1, fill);
     }
     return 1 + right + left + up + down;
   },
 
-  copyToBoard: (fill, board, duppedBoard) => {
+  copyToBoard(fill, board, duppedBoard) {
     for (let y = 0; y < duppedBoard.length; y++)
       for (let x = 0; x < duppedBoard[y].length; x++)
         if (duppedBoard[y][x] === fill)
           board[y][x] = 1;
   },
 
-  findFood: () => {
-    if (state.board.food.length !== 0) {
-      return state.board.food.map(food =>
-        Object.assign({}, food, { dist: calculateDistance(state.you.body[0], food) })
+  findFood() {
+    if (this.state.board.food.length !== 0) {
+      return this.state.board.food.map(food =>
+        Object.assign({}, food, { dist: this.calculateDistance(this.state.you.body[0], food) })
       ).reduce((prev, curr) => (prev.dist < curr.dist ? prev : curr));
     }
 
     return false;
   },
 
-  calculateDistance: (snakeHead, food) => {
+  calculateDistance(snakeHead, food) {
     const xDist = Math.abs(snakeHead.x - food.x);
     const yDist = Math.abs(snakeHead.y - food.y);
     return xDist + yDist;
   },
 
-  biggestSnake: () => {
-    return Math.max(...state.board.snakes.filter(snake => !(snake.body[0].x === state.you.body[0].x && snake.body[0].y === state.you.body[0].y))
+  biggestSnake() {
+    return Math.max(...this.state.board.snakes.filter(snake => !(snake.body[0].x === this.state.you.body[0].x && snake.body[0].y === this.state.you.body[0].y))
     .map(snake => snake.body.length))
   },
 
-  determineMove: (initialPossibleMoves, possibleMoves, food) => {
+  determineMove(initialPossibleMoves, possibleMoves, food) {
     if (initialPossibleMoves.length === 1) {
       return initialPossibleMoves[Math.floor(Math.random() * initialPossibleMoves.length)]
     } else if (possibleMoves.length == 0) {
-      if (stern > 0 && stern >= star && stern >= port && stern >= bow)
+      if (this.stern > 0 && this.stern >= this.star && this.stern >= this.port && this.stern >= this.bow)
         return "down"
-      else if (stern > 0 && bow >= star && bow >= port && bow >= stern)
+      else if (this.stern > 0 && this.bow >= this.star && this.bow >= this.port && this.bow >= this.stern)
         return "up"
-      else if (stern > 0 && star >= bow && star >= port && star >= stern)
+      else if (this.stern > 0 && this.star >= this.bow && this.star >= this.port && this.star >= this.stern)
         return "right"
-      else if (stern > 0 && port >= bow && port >= star && port >= stern)
+      else if (this.stern > 0 && this.port >= this.bow && this.port >= this.star && this.port >= this.stern)
         return "left"
       else
         return initialPossibleMoves[Math.floor(Math.random() * initialPossibleMoves.length)]
@@ -201,13 +185,13 @@ const snek = {
       const xDistance = (head, p) => { return p.x - head.x };
       const yDistance = (head, p) => { return p.y - head.y };
 
-      if (possibleMoves.includes("right") && xDistance(state.you.body[0], food) > 0)
+      if (possibleMoves.includes("right") && xDistance(this.state.you.body[0], food) > 0)
         return "right";
-      else if (possibleMoves.includes("left") && xDistance(state.you.body[0], food) < 0)
+      else if (possibleMoves.includes("left") && xDistance(this.state.you.body[0], food) < 0)
         return "left";
-      else if (possibleMoves.includes("down") && yDistance(state.you.body[0], food) > 0)
+      else if (possibleMoves.includes("down") && yDistance(this.state.you.body[0], food) > 0)
         return "down";
-      else if (possibleMoves.includes("up") && yDistance(state.you.body[0], food) < 0)
+      else if (possibleMoves.includes("up") && yDistance(this.state.you.body[0], food) < 0)
         return "up";
       else
         return possibleMoves[Math.floor(Math.random() * possibleMoves.length)];

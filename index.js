@@ -2,7 +2,7 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const logger = require('morgan')
 const app = express()
-const { snek } = require('./snek.js')
+const { Snek } = require('./snek.js')
 const {
   fallbackHandler,
   notFoundHandler,
@@ -24,13 +24,18 @@ app.use(poweredByHandler)
 
 // Handle POST request to '/start'
 app.post('/start', (request, response) => {
-  return response.json(snek.start())
+  return response.json({
+    color: '#ff3377',
+    headType: 'silly',
+    tailType: 'bolt',
+  })
 })
 
 // Handle POST request to '/move'
 app.post('/move', (request, response) => {
   try {
-    return response.json(snek.move(request))
+    const snek = Snek.new(request);
+    return response.json(snek.move());
   } catch (e) {
     console.log(e);
     return response.json({ move: 'up' });
@@ -38,7 +43,7 @@ app.post('/move', (request, response) => {
 })
 
 app.post('/end', (request, response) => {
-  return response.json(snek.end())
+  return response.json({})
 })
 
 app.post('/ping', (request, response) => {
