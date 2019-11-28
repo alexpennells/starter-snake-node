@@ -1,4 +1,8 @@
-export const move = request => {
+const move = request => {
   return 'down';
-};
+}
+
+module.exports = {
+  move
+}
 

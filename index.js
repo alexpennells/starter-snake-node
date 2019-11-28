@@ -29,7 +29,7 @@ app.post('/start', (request, response) => {
   // Response data
   const data = {
     color: '#ff3377',
-    headType: 'dead',
+    headType: 'silly',
     tailType: 'bolt',
   }
 
