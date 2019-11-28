@@ -29,7 +29,12 @@ app.post('/start', (request, response) => {
 
 // Handle POST request to '/move'
 app.post('/move', (request, response) => {
-  return response.json(snek.move(request))
+  try {
+    return response.json(snek.move(request))
+  } catch (e) {
+    console.log(e);
+    return response.json({ move: 'up' });
+  }
 })
 
 app.post('/end', (request, response) => {
