@@ -2,6 +2,7 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const logger = require('morgan')
 const app = express()
+const { move } = require('./snek.js')
 const {
   fallbackHandler,
   notFoundHandler,
@@ -28,9 +29,8 @@ app.post('/start', (request, response) => {
   // Response data
   const data = {
     color: '#ff3377',
-    taunt: 'ESKEETIT',
-    headType: 'dead',
-    tailType: 'bolt'
+    headType: 'silly',
+    tailType: 'bolt',
   }
 
   return response.json(data)
@@ -42,7 +42,7 @@ app.post('/move', (request, response) => {
 
   // Response data
   const data = {
-    move: 'up', // one of: ['up','down','left','right']
+    move: move(request),
   }
 
   return response.json(data)
