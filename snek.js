@@ -202,5 +202,5 @@ class Snek {
 };
 
 module.exports = {
-  snek,
+  Snek,
 }
