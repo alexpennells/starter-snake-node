@@ -31,7 +31,7 @@ app.post('/start', (request, response) => {
     secondary_color: '#ff3377',
     taunt: 'ESKEETIT',
     tailType: 'bolt',
-    headType: 'evil'
+    headType: 'fang'
   }
 
   return response.json(data)
