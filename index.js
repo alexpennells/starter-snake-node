@@ -27,8 +27,7 @@ app.post('/start', (request, response) => {
 
   // Response data
   const data = {
-    color: '#000000',
-    secondary_color: '#ff3377',
+    color: '#ff3377',
     taunt: 'ESKEETIT',
     tailType: 'bolt',
     headType: 'fang'
